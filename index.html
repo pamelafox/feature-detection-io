@@ -1,0 +1,886 @@
+<!doctype html>  
+<html lang="en">
+		<meta charset="utf-8">
+		<title>Feature Detection IRL</title>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+<style>
+.reveal section pre {
+  width: 100%;
+}
+
+.reveal section pre, .reveal section img {
+  max-width: 100%;
+  margin: 15px 0px;
+}
+
+.reveal .content {
+  width: 1000px;
+  margin: auto;
+}
+
+.reveal .oval-thought-border {
+  width: 600px;
+  position:relative; 
+  padding:70px 30px;
+  margin:1em auto 80px;
+  margin-bottom: 0px;
+  border:10px solid #000; 
+  text-align:center;
+  color:#333; 
+  background:#fff;
+  /* css3 */
+  /*
+  NOTES:
+  -webkit-border-radius:240px 140px; // produces oval in safari 4 and chrome 4
+  -webkit-border-radius:240px / 140px; // produces oval in chrome 4 (again!) but not supported in safari 4
+  Not correct application of the current spec, therefore, using longhand to avoid future problems with webkit corrects this
+  */
+  -webkit-border-top-left-radius:240px 140px;
+  -webkit-border-top-right-radius:240px 140px;
+  -webkit-border-bottom-right-radius:240px 140px;
+  -webkit-border-bottom-left-radius:240px 140px;
+  -moz-border-radius:240px / 140px;
+  border-radius:240px / 140px;
+}
+
+/* creates the larger circle */
+.reveal .oval-thought-border:before {
+  content:""; 
+  position:absolute; 
+  z-index:10; 
+  bottom:-80px; 
+  left:100px; 
+  width:50px; 
+  height:50px;
+  border:10px solid #000;
+  background:#fff;
+  /* css3 */
+  -webkit-border-radius:50px;
+  -moz-border-radius:50px;
+  border-radius:50px;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+}
+
+/* creates the smaller circle */
+.reveal .oval-thought-border:after {
+  content:""; 
+  position:absolute; 
+  z-index:10; 
+  bottom:-120px; 
+  left:75px; 
+  width:25px; 
+  height:25px; 
+  border:10px solid #000;
+  background:#fff;
+  /* css3 */
+  -webkit-border-radius:25px;
+  -moz-border-radius:25px;
+  border-radius:25px;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+}
+
+        </style>
+	</head>
+	
+	<body>
+		
+      <div class="reveal">
+
+			<!-- Used to fade in a background when a specific slide state is reached -->
+			<div class="state-background"></div>
+			
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+        <section>
+          <br><br>
+          <h1>Feature Detection</h1>
+          <h2>In the real world</h2>
+        </section>
+
+        <section>
+          <h2>HTML5: A Blessing and a Curse</h2>
+          <br>
+          <img src="img/screenshot_htmlfeatures.png">
+          <br>
+          <img src="img/screenshot_caniuse.png">
+
+        </section>
+
+        <section>
+          <div class="oval-thought-border">
+            Hmm. I want to use X.
+            But how will I decide when I can use X??
+          </div>
+
+          <img src="img/screenshot_me_thinking.png">
+        </section>
+
+        <section>
+          <h2>In an ideal world...</h2>
+
+          <div class="oval-thought-border">I know! I'll just ask the browser if they support it!</div>
+          <img src="img/screenshot_me_realizing.png">
+        </section>
+
+        <section>
+          <h2>Feature Detection</h2>
+
+          <div class="content">
+          JS APIs:
+          <pre><code>var supportsAudio = ("webkitAudioContext" in window || "AudioContext" in window);</code></pre>
+          <br>
+
+          HTML elements:
+          <pre><code>var div = createElement('div');
+div.innerHTML = '&lt;svg/&gt;';
+var supportsInlineSVG = div.firstChild
+    &amp;&amp; div.firstChild.namespaceURI == 'http://www.w3.org/2000/svg';</code></pre>
+          <br>
+
+          CSS:
+          <pre><code>var supportsTextShadow = 
+     ("textShadow" in document.createElement("detect").style);</code></pre>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Modernizr</h2>
+
+          <blockquote>A small JS library that detects the availability of native implementations</blockquote>
+          <br>
+
+          <!--The Modernizr library can do many of those checks for you, so that you don't have to figure out how to do detection yourself, and you can just do a build of what you're interested in. Or, copy from their source into yours.-->
+          <div class="content">
+          Load the Modernizr JS:
+          <pre><code>&lt;script src="/i/js/modernizr.com-custom-2.6.1-01.js">&lt;/script&gt;</code></pre>
+
+          Modernizr runs tests, adds class names and JS properties:
+          <pre><code>&lt;html class="js no-touch postmessage history multiplebgs boxshadow opacity cssanimations csscolumns cssgradients csstransforms csstransitions fontface formdata"&gt;</code></pre>
+
+          <br>
+          Then you can use in CSS:
+          <pre><code>html.svg .logo {
+  background-image: url('logo.svg');
+}
+</pre></code>
+          
+          Or in your JS:
+          <pre><code>if (Modernizr.touch) {
+   $('button').on('touch', handleClick);
+}</pre></code>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>So sweet when it works</h2>
+          <div class="oval-thought-border">I totally just detected the shit out of that feature!</div>
+          <img src="img/screenshot_me_happy.png">
+        </section>
+
+        <section>
+          <h2>But when it doesn't...</h2>
+
+          <div class="oval-thought-border">Oh noesss....it didn't work!</div>
+          <img src="img/screenshot_me_sad.png">
+
+        </section>
+
+        <section>
+          <h2>It's time for Plan B.</h2>
+
+          <div class="oval-thought-border">
+            Sigh. Guess I'll have to sniff the user agent instead...
+          </div>
+          <img src="img/screenshot_me_sigh.png">
+          <img>
+          
+        </section>
+
+        <section>
+          <h2>User Agent Sniffing</h2>
+
+          <div class="content">
+          <div>iPad/iPhone:<br>
+          <pre><code>var isIOS = (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i);</pre></code></div>
+
+          <div class="fragment">Top mobile browsers:<br>
+<pre><code>var isMobile = (navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/));</pre></code>
+          </div>
+
+          <div class="fragment">All mobile browsers:<br>
+          <pre style="font-size:14px;"><code>(function(a,b){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))window.location=b})(navigator.userAgent||navigator.vendor||window.opera,'http://detectmobilebrowser.com/mobile');
+        </pre></code>
+        </div>
+
+      </div>
+
+        </section>
+
+				<section>
+          <br>
+          <h1>Feature Detection
+            <br><span style="font-size:50%">vs.</span><br>
+            User Agent Sniffing</h1>
+          <br>
+          <h2>True stories!</h2>
+          <!-- BUT feature detection doesn't always work, or isn't always the best answer. I'm going to walk you through 5 tales of feature detection, and what I learnt.
+        -->
+        </section>
+
+
+        <section>
+          <h1><span style="font-size:90px;">The case of the</span>
+            <br>
+            <strong>hard-to-use localStorage</strong></h1>
+
+        </section>
+
+        <section>
+          <h2>localStorage</h2>
+          <!--
+ - I'm a big fan of localStorage, a client-side storage mechanism that was introduced early in the HTML5 process and is supported by a good number of browsers. It's a nice and simple alternative to cookies. 
+          -->
+
+          <blockquote>A client-side key-value storage API</blockquote>
+          <br>
+          <div class="content">
+          Store data:
+          <pre><code>$('form').on('submit', function() {
+  window.localStorage.set('username', $('input').val());
+});</pre></code>
+
+Retrieve data:
+<pre><code>alert(window.localStorage.get('username'));</pre></code>
+          <br>
+
+          <img src="img/screenshot_caniuse_localstorage.png">
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting support</h2>
+          <!--Since I was using it in a lot of my apps, I created a library called lscache that exposed a memcache-like interface for it, which let me cache API and AJAX responses for periods of time. I wanted my apps to keep working in older browsers, so I needed to make sure that my code only tried to use the localStorage API if it actually existed. I started with the basic check: if (window.localStorage)-->
+          <br>
+          <div class="content">
+          <pre><code>function supportsStorage() {
+  try {
+    return 'localStorage' in window &amp;&amp; window['localStorage'] !== null;
+  } catch (e) {
+    return false;
+  }
+}</pre></code>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting support, Take 2</h2>
+ <!--I soon discovered that the basic check wasn't enough - because sometimes localStorage would exist, but it would either be in read only mode or over quota - so I had to change to actually setting something in localStorage and retrieving it back out again:-->
+ <br>
+          <div class="content">
+ <pre><code>function supportsStorage() {
+  var key = '__lscachetest__';
+  // It's not straightforward due to FF4 issues and quota detection.
+  try {
+    // Fix for iPad issue - sometimes throws QUOTA_EXCEEDED_ERR on setItem
+    localStorage.removeItem(key);
+    localStorage.setItem(key, key);
+    localStorage.removeItem(key);
+    return true;
+  } catch (exc) {
+    return false;
+  }
+}</pre></code>
+          <br><br>
+          <p><a href="https://github.com/pamelafox/lscache/blob/master/lscache.js">☞ lscache.js</a></p>
+          <br>
+          <p><a href="https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/localstorage.js">☞ Modernizr: localstorage.js</a></p>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting support, Take 3</h2>
+
+<!--I was using lscache for a mobile app at the time, and working on improving the loading time, and I discovered that my localStorage detection check was taking a lot of time (300 MS) and because its a synchronous operation, it slowed down the rest of my app. So I moved the detection check to only happen right when it was needed:-->
+          <br>
+          <div class="content">
+          <pre><code>var cachedSupportsStorage;
+
+function supportsStorage() {
+    var key = '__lscachetest__';
+    var value = key;
+
+    if (cachedSupportsStorage !== undefined) {
+      return cachedSupportsStorage;
+    }
+
+    try {
+      setItem(key, value);
+      removeItem(key);
+      cachedSupportsStorage = true;
+    } catch (exc) {
+      cachedSupportsStorage = false;
+    }
+    return cachedSupportsStorage;
+}</pre></code>
+          </div>
+
+        </section>
+
+        <section>
+          <div class="content">
+
+            <h3>What I Learnt</h3>
+            <ul>
+              <li class="fragment">Don't just check that a browser implements an API...<br>
+                <span class="fragment">Check that the browser lets you use the API the way you want to.
+              <br><br>
+              <li class="fragment">Don't let feature detection slow down your site.
+            </ul>
+            <br><br>
+
+            <h3 class="fragment">My Browser Wishlist</h3>
+            <div class="fragment">
+              <p>Browsers should provide functions that let you know
+              <strong>quickly</strong> whether an API can be used how you want it.</p>
+              <p>For example:</p>
+              <pre style="font-size:24px; text-align:center;"><code>localStorage.canSet();
+localStorage.canGet();</pre></code>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section>
+          <h1><span style="font-size:90px;">The case of the</span><br>
+            <strong>missing FormData</strong></h1>
+        </section>
+
+        <section>
+          <h2>FormData</h2>
+
+          <blockquote>A set of key/value pairs representing form fields and their values
+          </blockquote>
+          <br>
+          <div class="content">
+          <pre style="font-size:24px; text-align:center;"><code>var formData = new FormData (document.forms[0])</pre></code>
+          <br>
+          <img src="img/screenshot_caniuse_formdata.png">
+
+          <br>
+          <p><a href="https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest/FormData">☞ MDN: FormData</a></p>
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting support</h2>
+<!--I was making a signup for my website last year and thought that I'd try out FormData, a new way to serialize form data and send it off to an XMLHttpRequest. I read the articles and implemented it, along with a feature detection check - And I deployed and I was happy! I'd used a new API successfully. -->
+          <br>
+          <div class="content">
+          <pre><code>if (window.FormData) {
+  var formData = new FormData(form[0]);
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/action/' + target, true);
+  xhr.onload = function(e) {
+    var responseJSON = JSON.parse(this.responseText);
+    callback(processJSON(responseJSON));
+  };
+  xhr.send(formData);
+} else {
+  $.ajax({
+      url: url,
+      type: 'POST',
+      data: form.serialize(),
+      dataType: 'json', success: function(responseJSON) {
+        onSuccess(processJSON(responseJSON));
+      }
+  });
+}</pre></code>
+        </div>
+
+        </section>
+
+        <section>
+          <h2>Sad Safari users</h2>
+  <!--But then I started seeing reports of users unable to sign up on some Safari browsers, and I was befuddled. Why would it not work on some Safari browsers?
+ - After a few hours of debugging, I discovered a bug in a particular Safari version where it would pretend to support FormData, but then it wouldn't actually store anything in the object, so absolutely nothing would get sent to the server.-->
+          <br>
+          <blockquote>I can't signup on Safari!</blockquote>
+          <br><br>
+          <div class="content fragment">
+          <img src="img/screenshot_safari_comment1.png">
+          <img src="img/screenshot_safari_comment2.png">
+          <img src="img/screenshot_safari_comment3.png">
+        </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting Safari</h2>
+<!-- - Unfortunately, the FormData API has no accessors, so there is no way to feature detect whether my code is running in a browser where FormData actually works. Instead, I had to give up and block based on user agent/version number:-->
+          <div class="content">
+          <img src="img/screenshot_safari_commit1.png"><br> 
+          <img src="img/screenshot_safari_commit2.png"><br>
+          <img src="img/screenshot_safari_commit3.png">
+          <pre><code>function isSafari() {
+  return ($.browser.webkit &amp;&amp; !(/chrome/.test(navigator.userAgent.toLowerCase())));
+} 
+
+function sendForm(form, target, callback) {
+  if (window.FormData &amp;&amp; !isSafari()) {
+    var formData = new FormData(form[0]);
+    // ...
+  } else {
+    // ...
+  }
+}</pre></code>
+        </div>
+
+        </section>
+
+        <section>
+          <div class="content">
+
+          <h3>What I Learnt</h3>
+          <ul>
+            <li class="fragment">Be wary of using new APIs...<br>
+            <span class="fragment">Especially for mission-critical parts of your app.<br><br>
+            <li class="fragment">Its safer to use the old APIs/libraries, with their known issues.
+          </ul>
+          <br><br>
+
+          <h3 class="fragment">My Browser Wishlist</h3>
+          <div class="fragment">
+            <p>All APIs that store/transmit data should have accessors to check whether they work as expected.
+            </p>
+            <p>For example:</p>
+            <pre style="font-size:24px; width:940px; "><code>var formData = new FormData(form);
+  if (!formData.hasItem('username')) {
+    // use older technique
+  }</pre></code>
+            </pre>
+          </div>
+
+          </div>
+
+        </section>
+
+        <section>
+          <h1><span style="font-size:90px;">The case of the</span>
+            <br>
+            <strong>fancy CSS</strong></h1>
+
+        </section>
+
+        <section>
+          <h2>CSS3 Styling</h2>
+          <!--
+          - I made a mobile app for a site last year using PhoneGap and the hybrid approach, which means embedding a browserview inside a native wrapper. I did that because I already had the full web version, I already knew HTML/CSS, and I wanted to reuse both my knowledge and my code.
+ - This was back when iPhone had a very specific set of design guidelines and Android didn't, so I based on the mobile styles on the iPhone guide - rounded, gradient buttons, shadows, etc. Luckily, we now have support for all of that in CSS3, so I can stick it in my styles, and all of those properties were officially supported on both the Android and iPhone Webkit flavors.-->
+          <div class="content">
+            <pre><code>.round-glossy-button {
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #f0f9ff 0%,#cbebff 47%,#a1dbff 100%); 
+  box-shadow: 2px 2px 3px #888;
+}</pre></code>
+          
+          <img src="img/screenshot_mobile_log.png" style="height:400px;">
+          <img src="img/screenshot_mobile_stream.png" style="height:400px;">
+          </div>
+          
+
+        </section>
+
+        <section>
+          <h2>Sad, sad Android users</h2>
+
+<!--I started running into very weird issues on the Android, where the screen would suddenly go completely white after I would scroll or click around the app. There was no JS error or fatal Java Android error, just a failure of Android to paint anything onto the  screen.-->
+          <br>
+          <div class="content">
+          <img src="img/screenshot_whiteout.png">
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Making Android happy</h2>
+<!-- I suspected that perhaps Android wasn't happy with my use of CSS3 features and I spent the afternoon commenting out parts of my CSS, waiting for the moment where it wouldn't white-out after scrolling. By the end of the day, I'd commented out most of the CSS3- box-shadow, border-radius, linear-gradient. It was possible that I could get away with some small number of some of those properties, but I didn't have any way of knowing exactly what that number was, so the easiest thing was just to remove it all.-->
+          <div class="content">
+          <pre><code>.modal {
+    @include box-shadow(none);
+    @include background-clip(border-box);
+    @include border-radius(0px);
+    border: 1px solid black;
+}</pre></code>
+          <img src="img/screenshot_androidcss.png">
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Detecting Android</h2>
+          <br>
+<!-- Thankfully, I discovered that in the newly published Android UI design guidelines, everything was meant to be flat and square, so my CSS removal actually made my app look more Android-y after all.
+ - I still wanted my app to look iPhoney on the iPhone though, so I put in a CSS switch based on the user agent:
+--> 
+          <div class="content">
+   <pre><code>function inUserAgent(str) {
+  return (new RegExp(str)).test(navigator.userAgent.toLowerCase());
+}
+
+function isAndroid() {
+
+  var isAndroidOS = inUserAgent('android') || inUserAgent('HTC_') || inUserAgent('Silk/');
+
+  var isAndroidPG = (window.device &amp;&amp; window.device.platform &amp;&amp; window.device.platform == 'Android' || false;
+
+  return isAndroidOS || isAndroidPG;
+}
+
+if (isAndroid() || getUrlParam('os') == 'android') {
+  $('body').addClass('android');
+}</pre></code>
+        
+        <pre><code>.android .modal {
+    @include box-shadow(none);
+    @include background-clip(border-box);
+    @include border-radius(0px);
+    border: 1px solid black;
+}</pre></code>
+            </div>
+
+        </section>
+
+        <section>
+          <div class="content">
+
+          <h3>What I Learnt</h3>
+          <ul>
+            <li class="fragment">Just because something "works", it doesn't mean it works well.<br><br>
+            <li class="fragment">Be careful about using new features in bulk, as any performance problems
+              will be exacerbated.
+          </ul>
+          <br><br>
+
+          
+          <h3 class="fragment">My Browser Wishlist</h3>
+          <div class="fragment">
+            <p>Browsers should know their limits, and not render CSS features they can't handle.</p>
+            <img src="img/screenshot_android_drunk.png" style="height:150px;">
+          </div>
+
+          </div>
+
+           <!--
+ - What the browsers should learn: it'd be better if Android had ignored my requests for CSS features, as I would have preferred square corners to a completely un-usable white screen. A browser should know its limits, or somehow do a better job letting us know them.-->
+
+        </section>
+
+
+        <section>
+          <h1><span style="font-size:90px;">The case of the</span>
+            <br>
+            <strong>signup process</strong></h1>
+
+        </section>
+
+        <section>
+          <h2>Signature Track</h2>
+          <div class="content">
+          <img src="img/screenshot_sigtrack.png">
+          </div>
+
+        </section>
+
+        <section>
+          <h2>The Requirements</h2>
+          <br>
+          <div class="content">
+          <img src="img/screenshot_sigtrack_reqs.png">
+          <br>
+          <p>
+          <a href="http://blog.pamelafox.org/2013/02/checking-for-technical-requirements-in.html">Checking for Technical Requirements in a Sign-up Process</a></p>
+          </div>
+
+        </section>
+
+        <section>
+            <h2>Physical keyboard</h2>
+
+            <div class="content">
+            <p>Our first attempt:</p>
+            <pre><code>function isTouchSupported() {
+    return (('ontouchstart' in window) || window.DocumentTouch &amp;&amp; document instanceof DocumentTouch);
+}</pre></code>
+            <br>
+            <p>...but that didn't always work, so...</p>
+            <pre><code>function isMobileDevice() {
+    var ua = navigator.userAgent || navigator.vendor || window.opera;
+    return (/iPhone|iPod|iPad|Android|BlackBerry|Opera Mini|IEMobile/).test(ua);
+}</pre></code>
+            <br>
+            <img src="img/screenshot_sigtrack_keyboard.png">
+            </div>
+
+        </section>
+
+
+        <section>
+          <h2>An aside: Touch Events</h2>
+
+          <div class="content">
+            <p>Cross-browser touch detection:</p>
+            <pre><code>var supportsTouch = (('ontouchstart' in window) ||
+     (navigator.maxTouchPoints > 0) ||
+     (navigator.msMaxTouchPoints > 0));
+var clickEvent = ('ontouchstart' in window ? 'touchend' : 'click');
+            </code></pre>
+            <br><br>
+            <p class="fragment">
+              But supportsTouch != onlySupportsTouch!
+            </p>
+            <!-- picture of android with mouse attached -->
+            <br><br>
+            <div class="fragment">
+            <p>To support both/either:</p>
+            <pre><code>blah.addEventListener('touchend', function(e) {
+  e.preventDefault();
+  e.target.click();
+})
+blah.addEventListener('click', function() {
+});</pre></code>
+            
+            <small>Read more:
+              <a href="https://hacks.mozilla.org/2013/04/detecting-touch-its-the-why-not-the-how/">
+              Supporting touch: the why, not the how</a>,
+              <a href="http://www.stucox.com/blog/you-cant-detect-a-touchscreen/">You can't detect a touchscreen</a>
+            </small>
+            </div>
+
+          </div>  
+
+        </section>
+
+        <section>
+          <h2>Flash Plugin</h2>
+          <br>
+          <div class="content">
+          <p>Using SWFObject:</p>
+          <pre><code>&lt;script src="swfobject.js"&gt;&lt;/script&gt;</pre></code>
+          
+          <pre><code>function isFlashSupported() {
+  swfobject.hasFlashPlayerVersion("8")
+}</pre></code>
+          <br>
+          <img src="img/screenshot_sigtrack_flash.png">
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Webcam</h2>
+
+          <div class="content">
+          <p>No way to detect without asking user, so...</p>
+          <img src="img/screenshot_sigtrack_webcam.png">
+          </div>
+
+        </section>
+
+        <section>
+          <div class="content">
+
+          <h3>What I Learnt</h3>
+          <ul>
+            <li class="fragment">If you do block users based on lack of features, tell them why.
+          </ul>
+          <br><br><br>
+
+          <div class="fragment">
+          <h3>My Browser Wishlist</h3>
+          
+            <p>Give developers a way to detect physical devices and plugins.</p>
+            <pre><code>navigator.hasPhysicalKeyboard();
+navigator.hasWebcam();
+navigator.hasPlugin('Flash', '8.0');</pre></code>
+          </div>
+
+          </div>
+
+        </section>
+
+
+        <!--<section>
+          <h2>Which to choose?</h2>
+          
+          <div style="position:relative; width:800px; margin: auto;">
+            <div class="oval-thought-border" style="position:absolute; left: 0px; z-index: 3; width: 300px; top: 60px;">Feature Detection!</div>
+
+            <div class="oval-thought-border" style="position:absolute; right: 20px; top: 80px; z-index: 3; width: 300px;">User Agent Sniffing!</div>
+
+            <img src="img/angel.png" style="position: absolute; z-index: 2; left: 20px; top:450px; box-shadow: none; background: transparent; border: none;">
+            <img src="img/demon.png" style="position: absolute; z-index: 2; right: 270px; top:470px; box-shadow: none; background: transparent; border: none;">
+            <img src="img/screenshot_me_deciding.png" style="margin-top:250px;">
+          </div>
+        </section>-->
+
+        <section>
+          <h2>Reminder: Why this matters</h2>
+          
+          <div class="content">
+            <p>Unequal feature distribution is the reality:</p>
+
+            <img src="http://dl.dropbox.com/u/10998095/Screenshots/yxlm92me-6lu.png">
+
+            <p>
+              <a href="http://btoe.ws/browserstats/">BrowserStats</a>,
+              <a href="https://github.com/Fyrd/caniuse/wiki">caniuse visualizations</a>
+            </p>
+
+          </div>
+        </section>
+
+        <section>
+          <h2>What's your strategy?</h2>
+          
+          <div class="content">
+            <br><br>
+
+            <h3 class="fragment">Use tried and true techniques.</h3>
+
+            <br><br>
+
+            <div class="fragment">
+              <h3>1) Is feature X supported?</h3>
+              <ol>
+                <li>Try feature detection
+                  <!--    (using Modernizr or "well tested" libraries-# of issues,forks,tests,browser, update dates, open source)
+     - look at the source first
+     - search through issue tracker
+     
+     -  playbackRate example
+                  -->
+
+                <li>Try user agent sniffing
+                  <!-- (using established Regex, dont want to maintain, uaparser-used by Google + FB, mobilebrowserdetects, jquery)
+      ua parser
+      - playbackRate -->
+                <li>Combine feature detection with UA blacklist
+              </ol>
+            </div>
+
+            <br><br>
+
+            <div class="fragment">
+              <h3>2) And if it's not?</h3>
+              <ul style="text-align:left;">
+                <li>Polyfill
+                <li>Degradation
+                <li>Block
+              </ul>
+              <br><br>
+            </div>
+
+          </div>  
+        </section>
+
+        <section>
+          <h2>Browsers have our backs!</h2>
+          
+          <div class="content">
+
+            <pre><code>@supports (column-count: 1) and (background-image: linear-gradient(#f00,#00f)) {
+            }</code></pre>
+
+            <pre><code>var foo = window.supportsCSS('column-count: 1');</code></pre>
+
+            <!-- Browser vendors are supportive and believe in it! 
+  @supports - opera, chrome, ff, ie?
+   Blink https://code.google.com/p/chromium/issues/detail?id=232181 https://docs.google.com/a/chromium.org/document/d/1pYWO33tXQe7m9KdRd101rzJW3TY2DLA0ay5RqukSoD8/edit
+   Modernizr uses and falls back to it.
+
+            -->
+          </div>
+        </section>
+
+
+			</div>
+
+			<!-- The navigational controls UI -->
+			<aside class="controls">
+				<a class="left" href="#">&#x25C4;</a>
+				<a class="right" href="#">&#x25BA;</a>
+				<a class="up" href="#">&#x25B2;</a>
+				<a class="down" href="#">&#x25BC;</a>
+			</aside>
+
+			<!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+			<div class="progress"><span></span></div>
+			
+		</div>
+
+		<!-- Optional libraries for code syntax highlighting and classList support in IE9 -->
+		<script src="lib/js/head.min.js"></script>
+
+		<script>
+			// Load the main reveal.js script
+			head.js( 'js/reveal.js', function() {
+				// Parse the query string into a key/value object
+				var query = {};
+
+				location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+					query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+				} );
+
+				// Fires when a slide with data-state=customevent is activated
+				Reveal.addEventListener( 'customevent', function() {
+					console.log( '"customevent" has fired' );
+				} );
+
+				// Fires each time a new slide is activated
+				Reveal.addEventListener( 'slidechanged', function( event ) {
+					// event.previousSlide, event.currentSlide, event.indexh, event.indexv
+				} );
+
+				// Full list of configuration options available here:
+				// https://github.com/hakimel/reveal.js#configuration
+				Reveal.initialize({
+					controls: true,
+					progress: true,
+					history: true,
+					
+					theme: query.theme || 'beige', // default/neon/beige
+					transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+				});
+			} );
+			
+			// Load third party scripts
+			head.js( 'lib/js/classList.js' );
+			head.js( 'lib/js/highlight.js', function() {
+				// Fire off syntax highlighting for potential code samples in the slides
+				hljs.initHighlightingOnLoad();
+			} );
+
+			// If we're runnning the notes server we need to include some additional JS
+			// TODO Is there a better way to determine if we're running the notes server?
+			if( window.location.host === 'localhost:1947' ) {
+				head.js( 'socket.io/socket.io.js', 'plugin/speakernotes/client.js' );
+			}
+		</script>
+		
+	</body>
+</html>
