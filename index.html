@@ -148,38 +148,16 @@ var supportsInlineSVG = div.firstChild
           <pre><code>var supportsTextShadow = 
      ("textShadow" in document.createElement("detect").style);</code></pre>
           </div>
-
-        </section>
-
-        <section>
-          <h2>Modernizr</h2>
-
-          <blockquote>A small JS library that detects the availability of native implementations</blockquote>
           <br>
 
-          <!--The Modernizr library can do many of those checks for you, so that you don't have to figure out how to do detection yourself, and you can just do a build of what you're interested in. Or, copy from their source into yours.-->
-          <div class="content">
-          Load the Modernizr JS:
-          <pre><code>&lt;script src="/i/js/modernizr.com-custom-2.6.1-01.js">&lt;/script&gt;</code></pre>
-
-          Modernizr runs tests, adds class names and JS properties:
-          <pre><code>&lt;html class="js no-touch postmessage history multiplebgs boxshadow opacity cssanimations csscolumns cssgradients csstransforms csstransitions fontface formdata"&gt;</code></pre>
-
-          <br>
-          Then you can use in CSS:
-          <pre><code>html.svg .logo {
-  background-image: url('logo.svg');
-}
-</pre></code>
-          
-          Or in your JS:
+          With Modernizr:
           <pre><code>if (Modernizr.touch) {
    $('button').on('touch', handleClick);
 }</pre></code>
-          </div>
 
         </section>
 
+    
         <section>
           <h2>So sweet when it works</h2>
           <div class="oval-thought-border">I totally just detected the shit out of that feature!</div>
@@ -754,68 +732,147 @@ navigator.hasPlugin('Flash', '8.0');</pre></code>
           </div>
         </section>
 
-        <section>
-          <h2>What's your strategy?</h2>
+         <section>
+          <h2>Browsers will help us</h2>
           
           <div class="content">
-            <br><br>
+            <br>
+            <p>Introducing CSS conditionals, level 3:</p>
 
-            <h3 class="fragment">Use tried and true techniques.</h3>
-
-            <br><br>
-
-            <div class="fragment">
-              <h3>1) Is feature X supported?</h3>
-              <ol>
-                <li>Try feature detection
-                  <!--    (using Modernizr or "well tested" libraries-# of issues,forks,tests,browser, update dates, open source)
-     - look at the source first
-     - search through issue tracker
-     
-     -  playbackRate example
-                  -->
-
-                <li>Try user agent sniffing
-                  <!-- (using established Regex, dont want to maintain, uaparser-used by Google + FB, mobilebrowserdetects, jquery)
-      ua parser
-      - playbackRate -->
-                <li>Combine feature detection with UA blacklist
-              </ol>
-            </div>
-
-            <br><br>
-
-            <div class="fragment">
-              <h3>2) And if it's not?</h3>
-              <ul style="text-align:left;">
-                <li>Polyfill
-                <li>Degradation
-                <li>Block
-              </ul>
-              <br><br>
-            </div>
-
-          </div>  
-        </section>
-
-        <section>
-          <h2>Browsers have our backs!</h2>
-          
-          <div class="content">
-
+            <br>
             <pre><code>@supports (column-count: 1) and (background-image: linear-gradient(#f00,#00f)) {
             }</code></pre>
-
+            <br>
             <pre><code>var foo = window.supportsCSS('column-count: 1');</code></pre>
+            <br>
+            <p>Supported by: Opera, Chrome, FF</p>
 
             <!-- Browser vendors are supportive and believe in it! 
   @supports - opera, chrome, ff, ie?
    Blink https://code.google.com/p/chromium/issues/detail?id=232181 https://docs.google.com/a/chromium.org/document/d/1pYWO33tXQe7m9KdRd101rzJW3TY2DLA0ay5RqukSoD8/edit
    Modernizr uses and falls back to it.
-
             -->
+            <br><br>
+
+            <p class="fragment">...but there's still much to do.</p>
+
           </div>
         </section>
+
+        <section>
+          <h4><strong>Do not</strong> assume it's going to be easy</h4>
+            <br>
+          <h4 class="fragment"><strong>Do not</strong> just copy the first StackOverflow answer</h4>
+            <br>
+
+          <h2 class="fragment"><strong>Do</strong> use tried and true techniques</h2>
+
+          <p class="fragment">Prefer popular, well-tested libraries
+            <br>
+            <span style="font-size:70%">(# of forks, issues, tests, browser coverage, last updated)</span>
+          </p>
+          <p class="fragment">If you're not sure, ask!
+            <br>
+            <span style="font-size:70%">(#jquery, Modernizr issues, @paul_irish)</span>
+          </p>
+          <img class="fragment" src="img/screenshot_paulirish.png">
+          <br>
+          <h3 class="fragment"><strong>Do</strong> try feature detection first</h3>
+
+        </section>
+
+  
+
+        <section>
+          <h2>Tried &amp; True: <strong>Modernizr</strong></h2>
+
+          <blockquote>A small JS library that detects the availability of native implementations</blockquote>
+          <br>
+
+          <!--The Modernizr library can do many of those checks for you, so that you don't have to figure out how to do detection yourself, and you can just do a build of what you're interested in. Or, copy from their source into yours.-->
+          <div class="content">
+          Load the Modernizr JS:
+          <pre><code>&lt;script src="/i/js/modernizr.com-custom-2.6.1-01.js">&lt;/script&gt;</code></pre>
+
+          Modernizr runs tests, adds class names and JS properties:
+          <pre><code>&lt;html class="js no-touch postmessage history multiplebgs boxshadow opacity cssanimations csscolumns cssgradients csstransforms csstransitions fontface formdata"&gt;</code></pre>
+
+          <br>
+          Then you can use in CSS:
+          <pre><code>html.svg .logo {
+  background-image: url('logo.svg');
+}
+</pre></code>
+          
+          Or in your JS:
+          <pre><code>if (Modernizr.touch) {
+   $('button').on('touch', handleClick);
+}</pre></code>
+          </div>
+
+        </section>
+
+
+        <section>
+          <h2>Tried &amp; True: <strong>ua-parser</strong></h2>
+
+          <div class="content">
+            <p>An OSS project to collect user agent detection code.</p>
+            <br>
+            <p>regexes.yaml
+              <br>⬇<br>
+              Python, JavaScript, PHP, Ruby, Java, D, C#, Perl
+            </p>
+            <br>
+            <pre><code>&lt;script src="ua-parser.js"&gt;&lt;/script&gt;
+var result = uaparser.parse(navigator.userAgent);
+console.log(result.ua.toString());        // -> "Safari 5.0.1"
+console.log(result.ua.toVersionString()); // -> "5.0.1"
+console.log(result.ua.family)             // -> "Safari"
+console.log(result.ua.major);             // -> "5"
+console.log(result.ua.minor);             // -> "0"
+console.log(result.ua.patch);             // -> "1"</pre></code>
+            
+            <br>
+            <p>Created by BrowserStack.<br>Used by Google, Facebook (and you?).</p>
+
+          </div>
+
+        </section>
+
+        <section>
+          <h2>Mix &amp; Match</h2>
+
+          <br>
+          <div class="content">
+          <p>Feature detect, then blacklist:</p>
+          <pre><code>if (Modernizr.touch &amp;&amp; !(ua.device == 'Safari' && ua.major == '4') {
+  /* do something that requires touch but is known to not work in Safari 4 */
+}</pre></code>
+          </div>
+
+        </section>
+
+        <section>
+
+          <div>
+            <p>We don't have this...</p>
+            <img src="img/sonicscrewdriver.png" style="height:150px;">
+          </div>
+
+          <div class="fragment">
+            <p>but we do have:<br>
+            <img src="img/toolbox.png" style="width:250px">
+          </div>
+          <div class="fragment">
+            <p>and:<br>
+            <img src="img/yayquery.jpg" style="width:250px;">
+          </div>
+
+          <!-- and the audience -->
+
+        </section>
+
 
 
 			</div>
