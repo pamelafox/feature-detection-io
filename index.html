@@ -102,6 +102,10 @@
           <br><br>
           <h1>Feature Detection</h1>
           <h2>In the real world</h2>
+
+          <br><br><br>
+          <p>@pamelafox, #io13</p>
+          <p>feature-detection-io.appspot.com</p>
         </section>
 
         <section>
@@ -147,13 +151,17 @@ var supportsInlineSVG = div.firstChild
           CSS:
           <pre><code>var supportsTextShadow = 
      ("textShadow" in document.createElement("detect").style);</code></pre>
-          </div>
           <br>
 
           With Modernizr:
           <pre><code>if (Modernizr.touch) {
    $('button').on('touch', handleClick);
 }</pre></code>
+
+          </div>
+          
+
+          
 
         </section>
 
@@ -627,12 +635,12 @@ if (isAndroid() || getUrlParam('os') == 'android') {
      (navigator.msMaxTouchPoints > 0));
 var clickEvent = ('ontouchstart' in window ? 'touchend' : 'click');
             </code></pre>
-            <br><br>
+            <br>
             <p class="fragment">
               But supportsTouch != onlySupportsTouch!
+              <br>
+              <img src="http://www.ubergizmo.com/wp-content/uploads/2011/08/30-Logitech-Tablet-Mouse.jpg">
             </p>
-            <!-- picture of android with mouse attached -->
-            <br><br>
             <div class="fragment">
             <p>To support both/either:</p>
             <pre><code>blah.addEventListener('touchend', function(e) {
@@ -683,15 +691,14 @@ blah.addEventListener('click', function() {
           <div class="content">
 
           <h3>What I Learnt</h3>
-          <ul>
-            <li class="fragment">If you do block users based on lack of features, tell them why.
-          </ul>
+          <p ="fragment">If you block users based on lack of features, tell them why.
+          </p>
           <br><br><br>
 
           <div class="fragment">
           <h3>My Browser Wishlist</h3>
           
-            <p>Give developers a way to detect physical devices and plugins.</p>
+            <p>Give us a way to detect physical devices and plugins.</p>
             <pre><code>navigator.hasPhysicalKeyboard();
 navigator.hasWebcam();
 navigator.hasPlugin('Flash', '8.0');</pre></code>
@@ -776,7 +783,7 @@ navigator.hasPlugin('Flash', '8.0');</pre></code>
             <span style="font-size:70%">(#jquery, Modernizr issues, @paul_irish)</span>
           </p>
           <img class="fragment" src="img/screenshot_paulirish.png">
-          <br>
+          <br><br>
           <h3 class="fragment"><strong>Do</strong> try feature detection first</h3>
 
         </section>
